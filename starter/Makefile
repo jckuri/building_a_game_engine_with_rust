@@ -23,10 +23,25 @@ run-c: build-c
 	$(TEST_GAME_EXE) # Run the test game
 
 .PHONY: test-rust
-test-rust:
+test-rust: build-c
 	@echo "Running Rust Tests Serially..."
-	cargo test --manifest-path ./my_game_engine/Cargo.toml tests::test_simple_game_loop -- --nocapture --ignored
-	cargo test --manifest-path ./my_game_engine/Cargo.toml tests::test_sprite_rendering -- --nocapture --ignored
-	cargo test --manifest-path ./my_game_engine/Cargo.toml tests::test_screen_clearing -- --nocapture --ignored
-	cargo test --manifest-path ./my_game_engine/Cargo.toml tests::test_key_presses -- --nocapture --ignored
-	cargo test --manifest-path ./my_game_engine/Cargo.toml tests::test_sprite_position_update -- --nocapture --ignored
+	cargo test tests::test_simple_game_loop -- --nocapture
+	cargo test tests::test_sprite_rendering -- --nocapture
+	cargo test tests::test_screen_clearing -- --nocapture
+	cargo test tests::test_key_presses -- --nocapture
+	cargo test tests::test_sprite_position_update -- --nocapture
+	
+.PHONY: run-pingpong
+run-pingpong: build-c
+	@echo "Running Ping-Pong..."
+	cargo run --bin pingpong
+	
+.PHONY: run-videogame
+run-videogame: build-c
+	@echo "Running videogame..."
+	cargo run --bin videogame
+	
+clean :
+	rm -rf *.o 
+	rm $(objects) $(OPENGL_WRAPPER_LIB_SO) $(OPENGL_WRAPPER_LIB_OBJ)
+	cargo clean

@@ -5,20 +5,42 @@
 // Global variable for the GLFW window
 GLFWwindow* window;
 
+void center_window(GLFWwindow* window) {
+ // Get the primary monitor
+ GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+
+ // Get the work area of the monitor
+ const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+ int monitorWidth = mode->width;
+ int monitorHeight = mode->height;
+
+ // Calculate the window position to center it
+ int windowWidth, windowHeight;
+ glfwGetWindowSize(window, &windowWidth, &windowHeight);
+ int windowX = (monitorWidth - windowWidth) / 2;
+ int windowY = (monitorHeight - windowHeight) / 2;
+
+ // Set the window position
+ glfwSetWindowPos(window, windowX, windowY);
+}
+
 // Function to create a game window
 void create_game_window(const char *title, int width, int height) {
     if (!glfwInit()) {
         exit(EXIT_FAILURE);
     }
+    
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
     window = glfwCreateWindow(width, height, title, NULL, NULL);
+    center_window(window);
 
     if (!window) {
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
 
-    glfwMakeContextCurrent(window);
+    glfwMakeContextCurrent(window);    
 
     // Set up orthographic projection
     glMatrixMode(GL_PROJECTION);
